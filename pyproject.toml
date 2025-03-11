@@ -5,14 +5,23 @@ description = "project_shopping_cart using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.13"
 dependencies = [
+    "agentops>=0.3.26",
+    "chainlit>=2.2.1",
     "crewai[tools]>=0.102.0,<1.0.0",
     "docling>=2.25.1",
+    "openlit>=1.33.15",
 ]
 
 [project.scripts]
 kickoff = "project_shopping_cart.main:kickoff"
 run_crew = "project_shopping_cart.main:kickoff"
+chain = "project_shopping_cart.app:main" 
+start_chainlit = "project_shopping_cart.main:run_chainlit"
+
+
 plot = "project_shopping_cart.main:plot"
+
+
 
 [build-system]
 requires = ["hatchling"]

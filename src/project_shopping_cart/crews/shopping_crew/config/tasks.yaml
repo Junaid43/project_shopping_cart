@@ -1,23 +1,8 @@
-find_category:
-  description: >
-    Find a top 3 trending category on Daraz.
-  expected_output: >
-    Return a string representing a list of 3 trending category on Daraz.
-  agent: researcher
-
-
 trending_product:
   description: >
-    Find a top 5 trending product from the category found through by find_category.
+    Find a list of 2 trending categories on daraz.pk website. Then find the top 2 trending products of the category found and their price.
   expected_output: >
-    A string representing a trending list of 5 products on Daraz from the category found through find_category.
-  agent: researcher
-
-trending_product_price:
-  description: >
-    Find the price of the trending product found through by trending_product.
-  expected_output: >
-    A string representing the price of the trending product found through by trending_product.
+    A string representing a trending list of category and their top 2 products with price on daraz.pk from the category.
   agent: researcher
 
 

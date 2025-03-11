@@ -9,11 +9,11 @@ import os
 
 from crewai.memory.storage import ltm_sqlite_storage as LTMSQLiteStorage, rag_storage as RAGStorage
 
-deep_seek_llm = LLM(
-    model="ollama/deepseek-r1:1.5b",
-    base_url="http://localhost:11434",
-    timeout=60
-)
+# deep_seek_llm = LLM(
+#     model="ollama/deepseek-r1:1.5b",
+#     base_url="http://localhost:11434",
+#     timeout=60
+# )
 
 gemini_llm = LLM(model='gemini/gemini-2.0-flash')
 
@@ -38,12 +38,14 @@ google_embedder = {
 @CrewBase
 class ProductContentCrew:
     """Product Content Writing Crew"""
+
+    agents_config = "config/agents.yaml"
+    tasks_config = "config/tasks.yaml"
+
     @agent
     def content_writer(self) -> Agent:
         return Agent(
-            role="Content Writer",
-            goal="Write the content for the products {product_list}",
-            backstory="You are a content writer for the product {product_list}",
+            config=self.agents_config["content_writer"],
             tools=[docs_tool,file_tool],
             llm=gemini_llm,
             verbose=True,
@@ -51,10 +53,7 @@ class ProductContentCrew:
     @task
     def write_content(self) -> Task:
         return Task(
-            description="Write the content for the product {product_list}",
-            agent=self.content_writer(),
-            expected_output="The content for the products {product_list}",
-            output_file="blog-posts/1.md",  # The file to write the output to
+            config=self.tasks_config["write_content"],
         )
     
 
@@ -63,34 +62,11 @@ class ProductContentCrew:
         """Creates the Product Content Writing Crew"""
 
         return Crew(
-            agents=[self.content_writer()],  # Automatically created by the @agent decorator
-            tasks=[self.write_content()],  # Automatically created by the @task decorator
+            agents=self.agents,  # Automatically created by the @agent decorator
+            tasks=self.tasks,  # Automatically created by the @task decorator
             verbose=True,
             planning=True,
             planning_llm=gemini_llm,
             memory=True,
-
-            long_term_memory = LongTermMemory(
-                storage=LTMSQLiteStorage(
-                db_path="{storage_path}/longterm_memory.db".format(storage_path=storage_path)
-                )
-            ),
-        
-        short_term_memory=ShortTermMemory(
-            storage = RAGStorage(
-                        embedder_config=google_embedder,
-                        type="short_term",
-                        path="{storage_path}/short_term_memory".format(storage_path=storage_path)
-                    )
-                ),
-
-                # Entity memory for tracking key information about entities
-            entity_memory = EntityMemory(
-                storage=RAGStorage(
-                    embedder_config=google_embedder,
-                    type="short_term",
-                    path="{storage_path}/entity_memory".format(storage_path=storage_path)
-                )
-    ),
 
         )

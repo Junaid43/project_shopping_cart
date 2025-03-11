@@ -1,0 +1,7 @@
+write_content:
+  description: >
+    Write the content for the product {product_list}
+  expected_output: >
+    The content for the products {product_list}
+  agent: content_writer
+  output_file : blog-posts/1.md
